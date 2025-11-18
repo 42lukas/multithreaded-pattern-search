@@ -1,0 +1,44 @@
+# === Build Artefakte ===
+*.o
+*.out
+*.exe
+*.a
+*.so
+*.dll
+*.dylib
+
+# Das eigentliche Programm
+multithreaded-pattern-search
+
+
+/build/
+bin/
+obj/
+
+# === Logs ===
+logs/*.log
+
+# === Temporäre Dateien ===
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.old
+
+# === System- & Editor-Dateien ===
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# === Makefile Backup Dateien ===
+Makefile.bak
+makefile.bak
+
+# other
+.cache/
+compile_commands.json
+cmake-build-*/
