@@ -34,7 +34,8 @@ void *ThrdFunc(void *arg) {
 
                     // Ergebnis in Knoten schreiben
                     pthread_mutex_lock(&cur->mutex);
-                    cur->found = result;
+                    cur->found = (result > 0 ? 1 : 0);  // bool
+                    cur->count = result;                // tatsächliche Trefferzahl
                     pthread_mutex_unlock(&cur->mutex);
 
                     fprintf(log,

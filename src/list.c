@@ -43,8 +43,8 @@ void ShowList(void) {
     printf("=== Ergebnisliste ===\n");
     Node *cur = g_list_head;
     while (cur) {
-        printf("Datei: %-20s | Thread: %2d | Pattern gefunden: %d\n",
-               cur->filename, cur->thread_id, cur->found);
+        printf("Datei: %-20s | Thread: %2d | Treffer: %d\n",
+        cur->filename, cur->thread_id, cur->count);
         cur = cur->next;
     }
 }

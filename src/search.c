@@ -2,39 +2,33 @@
 #include "search.h"
 
 int Search(const char *filename) {
-    if (!filename) {
+    if (!filename)
         return 0;
-    }
 
     char fullpath[PATH_MAX];
-    if (snprintf(fullpath, sizeof(fullpath), "%s/%s", SEARCH_DIR, filename)
-        >= (int)sizeof(fullpath)) {
-        fprintf(stderr, "Search: Pfad zu lang für '%s'\n", filename);
-        return 0;
-    }
+    snprintf(fullpath, sizeof(fullpath), "%s/%s", SEARCH_DIR, filename);
 
     FILE *fp = fopen(fullpath, "r");
-    if (!fp) {
-        fprintf(stderr, "Search: Kann Datei '%s' nicht öffnen: %s\n",
-                fullpath, strerror(errno));
+    if (!fp)
         return 0;
-    }
 
     char *line = NULL;
     size_t cap = 0;
     ssize_t len;
-    int found = 0;
+
+    int total = 0;
+    const char *p;
 
     while ((len = getline(&line, &cap, fp)) != -1) {
-        (void)len; // aktuell nicht benutzt
-        if (strstr(line, SEARCH_PATTERN) != NULL) {
-            found = 1;
-            break;
+        p = line;
+        while ((p = strstr(p, SEARCH_PATTERN)) != NULL) {
+            total++;
+            p += strlen(SEARCH_PATTERN); // weiter gehen, um mehrere Treffer zu zählen
         }
     }
 
-    free(line);          // Zeilenpuffer freigeben
-    fclose(fp);          // Datei direkt schließen
+    free(line);
+    fclose(fp);
 
-    return found;
+    return total;    // liefert jetzt Anzahl der Treffer
 }
