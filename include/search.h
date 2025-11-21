@@ -6,14 +6,14 @@
 #include <string.h>
 #include <pthread.h>
 #include <dirent.h>
-#include <limits.h>   // PATH_MAX
+#include <limits.h>
 #include <errno.h>
 
 // ---- Konfiguration ----
 #define NUM_THREADS      8                 // 4–8 laut Aufgabenblatt
 #define MAX_FILENAME_LEN 256              // interne Begrenzung
-#define SEARCH_PATTERN   "TODO"             // Suchmuster
-#define SEARCH_DIR       "./ToSearch"     // Verzeichnis mit Textdateien
+#define SEARCH_PATTERN   "TODO"           // Suchmuster
+#define SEARCH_DIR       "./ToSearch"     // Verzeichnis mit Dateien
 
 // ---- Datentyp für Listenknoten ----
 typedef struct Node {
