@@ -34,6 +34,7 @@ Thumbs.db
 # VS Code
 .vscode/
 *.code-workspace
+.idea/
 
 # === Makefile Backup Dateien ===
 Makefile.bak
