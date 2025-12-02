@@ -13,7 +13,7 @@
 /* Suchverzeichnis und Muster (Vorgaben aus Aufgabe, Beispielwerte) */
 #define SEARCH_DIR "C:\\5.Semester\\Betriebssysteme\\PA_Projekt\\ToSearch" // for mac "./ToSearch"
 #define PATTERN "TODO"      /* Hier ggf. das gewünschte Muster anpassen */
-#define NUM_THREADS 4     /* Zwischen 4 und 8 laut Aufgabenstellung */
+#define NUM_THREADS 4     /* Zwischen 4 und 8 */
 
 /* Knoten der einfach verketteten Liste */
 typedef struct Node {

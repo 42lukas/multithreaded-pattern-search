@@ -9,7 +9,7 @@ void *ThrdFunc(void *arg)
     int loop_active;
     int lock_result;
     int search_result;
-    int occurrence_count;   /* NEU */
+    int occurrence_count;
     int done = 0;
 
     my_id = *((int *)arg);
