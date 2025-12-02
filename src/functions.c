@@ -48,7 +48,9 @@ void GenList(void)
         }
     }
 
-    closedir(dir);
+    if (dir != NULL) {
+        closedir(dir);
+    }
 }
 
 void Add2List(const char *filename)
