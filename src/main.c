@@ -1,28 +1,40 @@
 #include "search.h"
 
-int main(void) {
+int main(void)
+{
     pthread_t threads[NUM_THREADS];
+    int thread_ids[NUM_THREADS];
+    int i;
+    int create_ok = 1;
+    int join_ok = 1;
+    int exit_code = EXIT_SUCCESS;
 
-    // Initialisierung und Listenaufbau
     init();
 
-    // Threads starten
-    for (long i = 0; i < NUM_THREADS; ++i) {
-        long thread_num = i + 1;  // Nummern 1..NUM_THREADS
-        int rc = pthread_create(&threads[i], NULL, ThrdFunc, (void *)thread_num);
-        if (rc != 0) {
-            fprintf(stderr, "main: pthread_create(%ld) failed: %s\n",
-                    thread_num, strerror(rc));
+    i = 0;
+    while (i < NUM_THREADS) {
+        thread_ids[i] = i + 1;
+        if (pthread_create(&threads[i], NULL, ThrdFunc, &thread_ids[i]) != 0) {
+            fprintf(stderr, "Fehler beim Erzeugen von Thread %d.\n", i + 1);
+            create_ok = 0;
         }
+        i = i + 1;
     }
 
-    // Auf Threads warten
-    for (int i = 0; i < NUM_THREADS; ++i) {
-        pthread_join(threads[i], NULL);
+    i = 0;
+    while (i < NUM_THREADS) {
+        if (pthread_join(threads[i], NULL) != 0) {
+            fprintf(stderr, "Fehler beim Warten auf Thread %d.\n", i + 1);
+            join_ok = 0;
+        }
+        i = i + 1;
     }
 
-    // Aufräumen (inkl. ShowList)
     finish();
 
-    return 0;
+    if (create_ok == 0 || join_ok == 0) {
+        exit_code = EXIT_FAILURE;
+    }
+
+    return exit_code;
 }

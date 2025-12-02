@@ -1,49 +1,20 @@
-# ============================
-#  Makefile für macOS & Windows
-#  (Windows über Git Bash / MSYS2 / WSL)
-# ============================
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c11 -pthread
+TARGET = search_prog
 
-# Name des Programms
-TARGET  = multithreaded-pattern-search
+OBJS = main.o threads.o functions.o
+DEPS = search.h
 
-# Verzeichnisse
-SRCDIR  = src
-INCDIR  = include
-
-# Compiler
-CC      ?= gcc
-
-# Flags
-CFLAGS  = -Wall -Wextra -pedantic -std=c11 -I$(INCDIR)
-LDFLAGS = -pthread
-
-# Alle .c-Dateien im src-Ordner
-SOURCES = $(wildcard $(SRCDIR)/*.c)
-OBJECTS = $(SOURCES:.c=.o)
-
-# Standard-Target
 all: $(TARGET)
 
-# Linken
-$(TARGET): $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
 
-# Kompilieren jeder .c zu .o
-$(SRCDIR)/%.o: $(SRCDIR)/%.c $(INCDIR)/search.h
-	$(CC) $(CFLAGS) -c -o $@ $<
+%.o: %.c $(DEPS)
+	$(CC) $(CFLAGS) -c $<
 
-# Programm ausführen
 run: $(TARGET)
 	./$(TARGET)
 
-# Aufräumen
 clean:
-	@echo "Cleaning..."
-	# Binaries (Unix + Windows)
-	rm -f $(TARGET) $(TARGET).exe
-	# Objektdateien
-	rm -f $(OBJECTS)
-	# Logs (optional, wenn du logs/ nutzt)
-	rm -f logs/*.log 2>/dev/null || true
-
-.PHONY: all run clean
+	rm -f $(OBJS) $(TARGET)

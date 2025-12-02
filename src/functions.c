@@ -1,0 +1,182 @@
+#include "search.h"
+
+Node *g_head = NULL; /* Definition der globalen Liste */
+
+/* Hilfsfunktion: sichere Kopie des Dateinamens, max. MAX_FILENAME_LEN Zeichen */
+static void copy_filename(char *dest, const char *src)
+{
+    size_t i = 0;
+    size_t len = strlen(src);
+
+    while (i < MAX_FILENAME_LEN && i < len) {
+        dest[i] = src[i];
+        i = i + 1;
+    }
+    dest[i] = '\0';
+}
+
+/* init(): initialisiert globale Variablen und ruft GenList() auf. */
+void init(void)
+{
+    int done = 0;
+
+    g_head = NULL;
+    GenList();
+
+    /* kein echter Algorithmus hier, aber so haben wir formell nur einen return */
+    if (g_head == NULL) {
+        done = 1;
+    } else {
+        done = 1;
+    }
+
+    if (done) {
+        /* nichts weiter zu tun */
+    }
+}
+
+/* GenList(): Verzeichnis öffnen, Dateinamen einlesen, für jede Datei Add2List() aufrufen. */
+void GenList(void)
+{
+    DIR *dir;
+    struct dirent *entry;
+    int loop_active;
+
+    dir = opendir(SEARCH_DIR);
+    if (dir == NULL) {
+        perror("Fehler beim Öffnen des Suchverzeichnisses");
+        loop_active = 0;
+    } else {
+        loop_active = 1;
+    }
+
+    while (loop_active == 1) {
+        entry = readdir(dir);
+        if (entry == NULL) {
+            loop_active = 0;
+        } else {
+            if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
+                Add2List(entry->d_name);
+            }
+        }
+    }
+
+    if (dir != NULL) {
+        closedir(dir);
+    }
+}
+
+/* Add2List(): neuen Knoten anlegen, initialisieren und am Listenanfang einfügen. */
+void Add2List(const char *filename)
+{
+    Node *node;
+    int done;
+
+    node = (Node *)malloc(sizeof(Node));
+    if (node == NULL) {
+        fprintf(stderr, "Speicherreservierung für Knoten fehlgeschlagen.\n");
+        done = 1;
+    } else {
+        copy_filename(node->filename, filename);
+        pthread_mutex_init(&node->mutex, NULL);
+        node->thread_id = 0;
+        node->found = 0;
+        node->next = g_head;
+        g_head = node;
+        done = 1;
+    }
+
+    if (done) {
+        /* kein weiterer Code notwendig */
+    }
+}
+
+/* Search(): Datei öffnen, Zeilen lesen, nach PATTERN suchen. 1 => gefunden, 0 => nicht gefunden. */
+int Search(const char *filename)
+{
+    char fullpath[MAX_PATH_LEN];
+    FILE *fp;
+    char buffer[1024];
+    int found = 0;
+    int loop_active;
+
+    snprintf(fullpath, sizeof(fullpath), "%s/%s", SEARCH_DIR, filename);
+
+    fp = fopen(fullpath, "r");
+    if (fp == NULL) {
+        fprintf(stderr, "Konnte Datei %s nicht öffnen.\n", fullpath);
+        found = 0;
+        loop_active = 0;
+    } else {
+        loop_active = 1;
+    }
+
+    while (loop_active == 1) {
+        if (fgets(buffer, sizeof(buffer), fp) == NULL) {
+            loop_active = 0;
+        } else {
+            if (strstr(buffer, PATTERN) != NULL) {
+                found = 1;
+            }
+        }
+    }
+
+    if (fp != NULL) {
+        fclose(fp);
+    }
+
+    return found;
+}
+
+/* ShowList(): alle Knoten anzeigen. */
+void ShowList(void)
+{
+    Node *current = g_head;
+    int loop_active;
+
+    if (current == NULL) {
+        loop_active = 0;
+    } else {
+        loop_active = 1;
+    }
+
+    while (loop_active == 1) {
+        printf("Datei: %-8s | Thread: %d | Gefunden: %d\n",
+               current->filename,
+               current->thread_id,
+               current->found);
+
+        current = current->next;
+        if (current == NULL) {
+            loop_active = 0;
+        }
+    }
+}
+
+/* finish(): ShowList() aufrufen und anschließend Speicher der Liste freigeben. */
+void finish(void)
+{
+    Node *current = g_head;
+    Node *next;
+    int loop_active;
+
+    ShowList();
+
+    if (current == NULL) {
+        loop_active = 0;
+    } else {
+        loop_active = 1;
+    }
+
+    while (loop_active == 1) {
+        next = current->next;
+        pthread_mutex_destroy(&current->mutex);
+        free(current);
+        current = next;
+        if (current == NULL) {
+            loop_active = 0;
+        }
+    }
+
+    g_head = NULL;
+}

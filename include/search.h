@@ -6,43 +6,36 @@
 #include <string.h>
 #include <pthread.h>
 #include <dirent.h>
-#include <limits.h>
-#include <errno.h>
 
-// ---- Konfiguration ----
-#define NUM_THREADS      8                 // 4–8 laut Aufgabenblatt
-#define MAX_FILENAME_LEN 256              // interne Begrenzung
-#define SEARCH_PATTERN   "TODO"           // Suchmuster
-#define SEARCH_DIR       "./ToSearch"     // Verzeichnis mit Dateien
+#define MAX_FILENAME_LEN 8
+#define MAX_PATH_LEN 260
 
-// ---- Datentyp für Listenknoten ----
+/* Suchverzeichnis und Muster (Vorgaben aus Aufgabe, Beispielwerte) */
+#define SEARCH_DIR "./ToSearch"
+#define PATTERN "OS"      /* Hier ggf. das gewünschte Muster anpassen */
+#define NUM_THREADS 4     /* Zwischen 4 und 8 laut Aufgabenstellung */
+
+/* Knoten der einfach verketteten Liste */
 typedef struct Node {
-    char filename[MAX_FILENAME_LEN];
-    pthread_mutex_t mutex;
-    int thread_id;
-    int found;   
-    int count;
-    struct Node *next;
+    char filename[MAX_FILENAME_LEN + 1]; /* Dateiname (ohne Pfad) */
+    pthread_mutex_t mutex;               /* Mutex für diesen Knoten */
+    int thread_id;                       /* Nummer des Threads, der die Datei bearbeitet hat / bearbeitet */
+    int found;                           /* 1 wenn Muster gefunden, 0 sonst */
+    struct Node *next;                   /* Zeiger auf nächsten Knoten */
 } Node;
 
-// ---- Globale Variablen ----
-extern Node *g_list_head;
-extern Node *g_list_tail;
+/* Globale Anfangsadresse der Liste */
+extern Node *g_head;
 
-// ---- Schnittstelle ----
-// init / finish
+/* Funktionsprototypen */
 void init(void);
 void finish(void);
 
-// Listenverwaltung
 void GenList(void);
 void Add2List(const char *filename);
+int Search(const char *filename);
 void ShowList(void);
 
-// Suche in einer Datei
-int Search(const char *filename);
-
-// Threadfunktion
 void *ThrdFunc(void *arg);
 
-#endif // SEARCH_H
+#endif /* SEARCH_H */
