@@ -44,3 +44,4 @@ makefile.bak
 .cache/
 compile_commands.json
 cmake-build-*/
+mac-files/
