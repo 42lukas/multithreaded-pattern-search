@@ -7,12 +7,12 @@
 #include <pthread.h>
 #include <dirent.h>
 
-#define MAX_FILENAME_LEN 8
+#define MAX_FILENAME_LEN 64
 #define MAX_PATH_LEN 260
 
 /* Suchverzeichnis und Muster (Vorgaben aus Aufgabe, Beispielwerte) */
-#define SEARCH_DIR "./ToSearch"
-#define PATTERN "OS"      /* Hier ggf. das gewünschte Muster anpassen */
+#define SEARCH_DIR "C:\\5.Semester\\Betriebssysteme\\PA_Projekt\\ToSearch"
+#define PATTERN "TODO"      /* Hier ggf. das gewünschte Muster anpassen */
 #define NUM_THREADS 4     /* Zwischen 4 und 8 laut Aufgabenstellung */
 
 /* Knoten der einfach verketteten Liste */

@@ -100,7 +100,7 @@ int Search(const char *filename)
     int found = 0;
     int loop_active;
 
-    snprintf(fullpath, sizeof(fullpath), "%s/%s", SEARCH_DIR, filename);
+    snprintf(fullpath, sizeof(fullpath), "%s\\%s", SEARCH_DIR, filename);
 
     fp = fopen(fullpath, "r");
     if (fp == NULL) {

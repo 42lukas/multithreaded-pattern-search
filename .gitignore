@@ -17,6 +17,7 @@ obj/
 
 # === Logs ===
 logs/*.log
+*log
 
 # === Temporäre Dateien ===
 *.tmp
