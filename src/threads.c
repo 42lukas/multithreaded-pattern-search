@@ -1,6 +1,5 @@
 #include "search.h"
 
-/* Thread-Funktion: geht einmal durch die gesamte Liste und bearbeitet Knoten. */
 void *ThrdFunc(void *arg)
 {
     int my_id;
@@ -10,6 +9,7 @@ void *ThrdFunc(void *arg)
     int loop_active;
     int lock_result;
     int search_result;
+    int occurrence_count;   /* NEU */
     int done = 0;
 
     my_id = *((int *)arg);
@@ -18,7 +18,6 @@ void *ThrdFunc(void *arg)
     logfp = fopen(logname, "w");
     if (logfp == NULL) {
         fprintf(stderr, "Thread %d: Konnte Logdatei %s nicht öffnen.\n", my_id, logname);
-        /* trotzdem weiterarbeiten, Log nur auf stderr */
     }
 
     current = g_head;
@@ -44,22 +43,24 @@ void *ThrdFunc(void *arg)
 
                 pthread_mutex_unlock(&current->mutex);
 
-                search_result = Search(current->filename);
+                occurrence_count = 0;
+                search_result = Search(current->filename, &occurrence_count);
 
                 lock_result = pthread_mutex_lock(&current->mutex);
                 if (lock_result == 0) {
                     current->found = search_result;
+                    current->count = occurrence_count;
                     pthread_mutex_unlock(&current->mutex);
                 }
 
                 if (logfp != NULL) {
                     fprintf(logfp,
-                            "Thread %d: Suche in Datei %s abgeschlossen, Ergebnis: %d.\n",
-                            my_id, current->filename, search_result);
+                            "Thread %d: Suche in Datei %s abgeschlossen, Ergebnis: %d, Anzahl: %d.\n",
+                            my_id, current->filename, search_result, occurrence_count);
                 } else {
                     fprintf(stderr,
-                            "Thread %d: Suche in Datei %s abgeschlossen, Ergebnis: %d.\n",
-                            my_id, current->filename, search_result);
+                            "Thread %d: Suche in Datei %s abgeschlossen, Ergebnis: %d, Anzahl: %d.\n",
+                            my_id, current->filename, search_result, occurrence_count);
                 }
 
             } else {

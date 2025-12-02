@@ -19,8 +19,9 @@
 typedef struct Node {
     char filename[MAX_FILENAME_LEN + 1]; /* Dateiname (ohne Pfad) */
     pthread_mutex_t mutex;               /* Mutex für diesen Knoten */
-    int thread_id;                       /* Nummer des Threads, der die Datei bearbeitet hat / bearbeitet */
+    int thread_id;                       /* Nummer des Threads */
     int found;                           /* 1 wenn Muster gefunden, 0 sonst */
+    int count;                           /* Anzahl Vorkommen von PATTERN */
     struct Node *next;                   /* Zeiger auf nächsten Knoten */
 } Node;
 
@@ -33,7 +34,7 @@ void finish(void);
 
 void GenList(void);
 void Add2List(const char *filename);
-int Search(const char *filename);
+int Search(const char *filename, int *occurrences);
 void ShowList(void);
 
 void *ThrdFunc(void *arg);
