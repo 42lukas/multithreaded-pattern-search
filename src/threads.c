@@ -11,6 +11,7 @@ void *ThrdFunc(void *arg)
     int search_result;
     int occurrence_count;
 
+
     my_id = *((int *)arg);
 
     snprintf(logname, sizeof(logname), "thread_%02d.log", my_id);

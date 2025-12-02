@@ -1,8 +1,8 @@
 #include "search.h"
 
-Node *g_head = NULL; /* Definition der globalen Liste */
+Node *g_head = NULL; //Definition der globalen Liste
 
-/* Hilfsfunktion: sichere Kopie des Dateinamens, max. MAX_FILENAME_LEN Zeichen */
+//Hilfsfunktion: sichere Kopie des Dateinamens, max. MAX_FILENAME_LEN Zeichen
 static void copy_filename(char *dest, const char *src)
 {
     size_t i = 0;
@@ -15,14 +15,14 @@ static void copy_filename(char *dest, const char *src)
     dest[i] = '\0';
 }
 
-/* init(): initialisiert globale Variablen und ruft GenList() auf. */
+
 void init(void)
 {
     g_head = NULL;
     GenList();
 }
 
-/* GenList(): Verzeichnis öffnen, Dateinamen einlesen, für jede Datei Add2List() aufrufen. */
+
 void GenList(void)
 {
     DIR *dir;
@@ -66,7 +66,7 @@ void Add2List(const char *filename)
         pthread_mutex_init(&node->mutex, NULL);
         node->thread_id = 0;
         node->found = 0;
-        node->count = 0;          /* NEU: Vorkommenszähler initialisieren */
+        node->count = 0;
         node->next = g_head;
         g_head = node;
     }
@@ -147,7 +147,7 @@ void ShowList(void)
     }
 }
 
-/* finish(): ShowList() aufrufen und anschließend Speicher der Liste freigeben. */
+
 void finish(void)
 {
     Node *current = g_head;

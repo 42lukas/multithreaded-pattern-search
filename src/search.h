@@ -9,29 +9,26 @@
 
 #define MAX_FILENAME_LEN 64
 #define MAX_PATH_LEN 260
+#define SEARCH_DIR "../ToSearch"
+#define PATTERN "TODO"
+#define NUM_THREADS 4
 
-/* Suchverzeichnis und Muster (Vorgaben aus Aufgabe, Beispielwerte) */
-#define SEARCH_DIR "D:\\Programmieren\\Repos\\multithreaded-pattern-search\\ToSearch" // for mac "./ToSearch"
-#define PATTERN "TODO"      /* Hier ggf. das gewünschte Muster anpassen */
-#define NUM_THREADS 4     /* Zwischen 4 und 8 */
 
-/* Knoten der einfach verketteten Liste */
 typedef struct Node {
-    char filename[MAX_FILENAME_LEN + 1]; /* Dateiname (ohne Pfad) */
-    pthread_mutex_t mutex;               /* Mutex für diesen Knoten */
-    int thread_id;                       /* Nummer des Threads */
-    int found;                           /* 1 wenn Muster gefunden, 0 sonst */
-    int count;                           /* Anzahl Vorkommen von PATTERN */
-    struct Node *next;                   /* Zeiger auf nächsten Knoten */
+    char filename[MAX_FILENAME_LEN + 1];
+    pthread_mutex_t mutex;               //Mutex für des Knotens
+    int thread_id;
+    int found;                           //1 wenn Muster gefunden, sonst 0
+    int count;
+    struct Node *next;
 } Node;
 
-/* Globale Anfangsadresse der Liste */
+//Globale Anfangsadresse der Liste
 extern Node *g_head;
 
-/* Funktionsprototypen */
+//Prototypen
 void init(void);
 void finish(void);
-
 void GenList(void);
 void Add2List(const char *filename);
 int Search(const char *filename, int *occurrences);
@@ -39,4 +36,4 @@ void ShowList(void);
 
 void *ThrdFunc(void *arg);
 
-#endif /* SEARCH_H */
+#endif
