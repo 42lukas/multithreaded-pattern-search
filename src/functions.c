@@ -18,21 +18,8 @@ static void copy_filename(char *dest, const char *src)
 /* init(): initialisiert globale Variablen und ruft GenList() auf. */
 void init(void)
 {
-    int done = 0;
-
     g_head = NULL;
     GenList();
-
-    /* kein echter Algorithmus hier, aber so haben wir formell nur einen return */
-    if (g_head == NULL) {
-        done = 1;
-    } else {
-        done = 1;
-    }
-
-    if (done) {
-        /* nichts weiter zu tun */
-    }
 }
 
 /* GenList(): Verzeichnis öffnen, Dateinamen einlesen, für jede Datei Add2List() aufrufen. */
@@ -61,20 +48,17 @@ void GenList(void)
         }
     }
 
-    if (dir != NULL) {
-        closedir(dir);
-    }
+    closedir(dir);
 }
 
 void Add2List(const char *filename)
 {
     Node *node;
-    int done;
+
 
     node = (Node *)malloc(sizeof(Node));
     if (node == NULL) {
         fprintf(stderr, "Speicherreservierung für Knoten fehlgeschlagen.\n");
-        done = 1;
     } else {
         copy_filename(node->filename, filename);
         pthread_mutex_init(&node->mutex, NULL);
@@ -83,11 +67,6 @@ void Add2List(const char *filename)
         node->count = 0;          /* NEU: Vorkommenszähler initialisieren */
         node->next = g_head;
         g_head = node;
-        done = 1;
-    }
-
-    if (done) {
-        /* kein weiterer Code notwendig */
     }
 }
 
@@ -96,7 +75,6 @@ int Search(const char *filename, int *occurrences)
     char fullpath[MAX_PATH_LEN];
     FILE *fp;
     char buffer[1024];
-    int found = 0;
     int loop_active;
     int local_count = 0;
     char *pos;
@@ -139,13 +117,7 @@ int Search(const char *filename, int *occurrences)
         *occurrences = local_count;
     }
 
-    if (local_count > 0) {
-        found = 1;
-    } else {
-        found = 0;
-    }
-
-    return found;
+    return (local_count > 0);
 }
 
 void ShowList(void)
