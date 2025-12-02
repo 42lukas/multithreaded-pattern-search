@@ -10,7 +10,6 @@ void *ThrdFunc(void *arg)
     int lock_result;
     int search_result;
     int occurrence_count;
-    int done = 0;
 
     my_id = *((int *)arg);
 
@@ -94,11 +93,6 @@ void *ThrdFunc(void *arg)
 
     if (logfp != NULL) {
         fclose(logfp);
-    }
-
-    done = 1;
-    if (done) {
-        /* genau ein return wie gefordert */
     }
 
     return NULL;

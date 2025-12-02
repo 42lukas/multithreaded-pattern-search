@@ -1,54 +1,39 @@
-#  A.Zimmermann, Allzweck-Makefile
-#  Vorteile:
-#  * Nur geänderte C- und H-Dateien werden kompiliert.
-#  * C- und O-Dateien werden getrennt gespeichert.
-#
-#  For MS DOS, for MS Windows, too :-)
-#
-#-------------------------------------
+# Name des Programms
+TARGET = multithreaded-pattern-search.exe
 
-# Program name
-ZIEL = letsgo.exe
+# Quell- und Headerdateien (hardcoded)
+SRC     = main.c functions.c threads.c
+HEADERS = search.h
 
-# Source codes should be in current directory.
-#SRC = start.c methoden.c lib.c
-#HDR = adt.h
-SRC = $(shell dir /b *.c)
-HDR = $(shell dir /b *.h)
-
-# Directory for obj-files.
+# Objektverzeichnis und -dateien
 OBJ_DIR = obj
-
-#------------------------------
-
-# Pattern for obj-files.
-OBJ_PAT = $(OBJ_DIR)/%.o
-# List of obj-files.
-OBJ_DAT = $(SRC:%.c=$(OBJ_PAT))
-# Pattern for obj-files as out in gcc.
-OBJ_OUT = $(<:%.c=$(OBJ_PAT))
-
-# Linker
-$(ZIEL) : $(OBJ_DAT)
-	@echo Linking ...
-	gcc -o $@ $(OBJ_DAT)
+OBJ     = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC))
 
 # Compiler
-$(OBJ_PAT) : %.c $(HDR)
-	@echo Compiling ...
-	gcc -c -o $(OBJ_OUT) $<
+CC     = gcc
+CFLAGS = -Wall -Wextra -std=c11 -g
 
-run:
-	cls
-	$(ZIEL)
+.PHONY: all run clean
+
+# Default target
+all: $(TARGET)
+
+# Linken
+$(TARGET): $(OBJ)
+	@echo "Linking $(TARGET)..."
+	$(CC) $(CFLAGS) -o $@ $^
+
+# Compile-Regel für obj/ Dateien (abhängig von search.h)
+$(OBJ_DIR)/%.o: %.c $(HEADERS) | $(OBJ_DIR)
+	@echo "Compiling $<..."
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Erzeuge obj/ falls nicht vorhanden
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+run: all
+	./$(TARGET)
 
 clean:
-	@echo Deleting obj-files ...
-	del $(OBJ_DIR)\*.o
-
-# Link obj-files only
-link:
-	@echo Linking obj-files only ...
-	gcc -o $(ZIEL) $(OBJ_DAT)
-
-#  =============  EOF  =============
+	rm -f $(OBJ_DIR)/*.o $(TARGET)
