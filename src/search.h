@@ -16,9 +16,9 @@
 
 typedef struct Node {
     char filename[MAX_FILENAME_LEN + 1];
-    pthread_mutex_t mutex;               //Mutex für des Knotens
+    pthread_mutex_t mutex;
     int thread_id;
-    int found;                           //1 wenn Muster gefunden, sonst 0
+    int found;
     int count;
     struct Node *next;
 } Node;

@@ -2,7 +2,7 @@
 
 Node *g_head = NULL; //Definition der globalen Liste
 
-//Hilfsfunktion: sichere Kopie des Dateinamens, max. MAX_FILENAME_LEN Zeichen
+//Hilfsfunktion: sichere Kopie des Dateinamens
 static void copy_filename(char *dest, const char *src)
 {
     size_t i = 0;
