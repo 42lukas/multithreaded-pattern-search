@@ -44,12 +44,11 @@ void *ThrdFunc(void *arg)
                 pthread_mutex_unlock(&current->mutex);
 
                 occurrence_count = 0;
-                search_result = Search(current->filename, &occurrence_count);
+                search_result = Search(current->filename);
 
                 lock_result = pthread_mutex_lock(&current->mutex);
                 if (lock_result == 0) {
                     current->found = search_result;
-                    current->count = occurrence_count;
                     pthread_mutex_unlock(&current->mutex);
                 }
 

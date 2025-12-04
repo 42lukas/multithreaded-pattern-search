@@ -66,60 +66,35 @@ void Add2List(const char *filename)
         pthread_mutex_init(&node->mutex, NULL);
         node->thread_id = 0;
         node->found = 0;
-        node->count = 0;
         node->next = g_head;
         g_head = node;
     }
 }
 
-int Search(const char *filename, int *occurrences)
+int Search(const char *filename)
 {
     char fullpath[MAX_PATH_LEN];
     FILE *fp;
     char buffer[1024];
-    int loop_active;
-    int local_count = 0;
-    char *pos;
-    int inner_active;
+    int found = 0;
 
-    snprintf(fullpath, sizeof(fullpath), "%s\\%s", SEARCH_DIR, filename);
+    snprintf(fullpath, sizeof(fullpath), "%s/%s", SEARCH_DIR, filename);
 
     fp = fopen(fullpath, "r");
     if (fp == NULL) {
         fprintf(stderr, "Konnte Datei %s nicht öffnen.\n", fullpath);
-        loop_active = 0;
-    } else {
-        loop_active = 1;
+        return 0;
     }
 
-    while (loop_active == 1) {
-        if (fgets(buffer, sizeof(buffer), fp) == NULL) {
-            loop_active = 0;
-        } else {
-            pos = buffer;
-            inner_active = 1;
-
-            while (inner_active == 1) {
-                pos = strstr(pos, PATTERN);
-                if (pos == NULL) {
-                    inner_active = 0;
-                } else {
-                    local_count = local_count + 1;
-                    pos = pos + strlen(PATTERN);
-                }
-            }
+    while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+        if (strstr(buffer, PATTERN) != NULL) {
+            found = 1;
+            break;
         }
     }
 
-    if (fp != NULL) {
-        fclose(fp);
-    }
-
-    if (occurrences != NULL) {
-        *occurrences = local_count;
-    }
-
-    return (local_count > 0);
+    fclose(fp);
+    return found;
 }
 
 void ShowList(void)
@@ -134,11 +109,10 @@ void ShowList(void)
     }
 
     while (loop_active == 1) {
-        printf("Datei: %-8s | Thread: %d | Gefunden: %d | Anzahl: %d\n",
+        printf("Datei: %-8s | Thread: %d | Gefunden: %d\n",
                current->filename,
                current->thread_id,
-               current->found,
-               current->count);
+               current->found);
 
         current = current->next;
         if (current == NULL) {

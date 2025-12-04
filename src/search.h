@@ -19,7 +19,6 @@ typedef struct Node {
     pthread_mutex_t mutex;
     int thread_id;
     int found;
-    int count;
     struct Node *next;
 } Node;
 
@@ -31,7 +30,7 @@ void init(void);
 void finish(void);
 void GenList(void);
 void Add2List(const char *filename);
-int Search(const char *filename, int *occurrences);
+int Search(const char *filename);
 void ShowList(void);
 
 void *ThrdFunc(void *arg);
