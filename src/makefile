@@ -1,42 +1,38 @@
-# Name des Programms
-TARGET = multithreaded-pattern-search.exe
-
-# Quell- und Headerdateien
-SRC     = main.c functions.c threads.c
-HEADERS = search.h
-
-# Objektverzeichnis und -dateien
-OBJ_DIR = obj
-OBJ     = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC))
-
-# Compiler
-CC     = gcc
-CFLAGS  = -Wall -Wextra -std=c11 -g
-LDFLAGS = -pthread
+# multithreaded-pattern-search.exe
 
 .PHONY: all run clean
 
-# Default target
-all: $(TARGET)
+# Default-Target
+all: multithreaded-pattern-search.exe
 
-# Linken
-$(TARGET): $(OBJ)
-	@echo "Linking $(TARGET)..."
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+# Linken des Programms
+multithreaded-pattern-search.exe: obj/main.o obj/functions.o obj/threads.o
+	@echo "Linking multithreaded-pattern-search.exe..."
+	gcc -Wall -Wextra -std=c11 -g -pthread -o multithreaded-pattern-search.exe obj/main.o obj/functions.o obj/threads.o
 
-# Compile-Regel für obj/ Dateien
-$(OBJ_DIR)/%.o: %.c $(HEADERS) | $(OBJ_DIR)
-	@echo "Compiling $<..."
-	$(CC) $(CFLAGS) -c $< -o $@
+# Objektdatei für main.c
+obj/main.o: main.c search.h | obj
+	@echo "Compiling main.c..."
+	gcc -Wall -Wextra -std=c11 -g -c main.c -o obj/main.o
 
-# Erzeuge obj/ falls nicht vorhanden
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
+# Objektdatei für functions.c
+obj/functions.o: functions.c search.h | obj
+	@echo "Compiling functions.c..."
+	gcc -Wall -Wextra -std=c11 -g -c functions.c -o obj/functions.o
+
+# Objektdatei für threads.c
+obj/threads.o: threads.c search.h | obj
+	@echo "Compiling threads.c..."
+	gcc -Wall -Wextra -std=c11 -g -c threads.c -o obj/threads.o
+
+# Erzeuge obj/-Verzeichnis, falls nicht vorhanden
+obj:
+	mkdir -p obj
 
 run: all
-	@echo "Running $(TARGET)..."
-	./$(TARGET)
+	@echo "Running multithreaded-pattern-search.exe..."
+	./multithreaded-pattern-search.exe
 
 clean:
 	@echo "Cleaning up..."
-	rm -f $(OBJ_DIR)/*.o $(TARGET)
+	rm -f obj/*.o multithreaded-pattern-search.exe
